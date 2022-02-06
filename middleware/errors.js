@@ -1,36 +1,29 @@
-const errorHandler = (err, req, res, next) => {
-    let errObj = { statusCode: 500, error: 'SERVER ERROR' };
+const CustomError = require('../utils/customError');
 
-    // Mongoose ValidationError > required field not provided
+const errorHandler = (err, req, res, next) => {
+    // // Mongoose ValidationError
     if (err.name === 'ValidationError') {
         const msg = Object.values(err.errors).map(val => val.message);
-        errObj = {
-            statusCode: 400,
-            error: {
-                name: 'Required field(s) not provided',
-                message: msg
-            }
-        }
+        err = new CustomError(`Validation FAIL > ${msg}`, 400);
     }
 
-    // Mongoose Duplicate key error > unique field required
+    // Mongoose Duplicate key error
     if (err.code == 11000) {
-        errObj = {statusCode: 400, error: 'Duplicate field value entered'};
+        // const key = Object.values(err.keyValue);
+        err = new CustomError(`Duplicate field value for 'name = ${err.keyValue.name}'`, 400);
     }
 
     // Mongoose bad _id format
     if (err.name === 'CastError') {
-        errObj = { statusCode: 404, error: `Can't find a bootcamp with ID ${err.value}` };
+        const model = err.message.split('model ')[1];
+        err = new CustomError(`Not found any ${model.toUpperCase()} with ID: ${err.value}`, 404);
     }
 
     // Send the response after handling the error
-    res.status(errObj.statusCode).json({
+    res.status(err.statusCode).json({
         success: false,
-        error: errObj.error
+        error: err.message
     });
-
-    // DEBUGGIN FOR DEV
-    console.log(err)
 }
 
 module.exports = errorHandler;
