@@ -47,7 +47,7 @@ const BootcampSchema = new Mongoose.Schema({
 
     careers: {
         type: [String],
-        requiredd: true,
+        required: true,
         enum: [
             'Web Development',
             'UI/UX',
