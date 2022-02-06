@@ -1,6 +1,7 @@
 const CustomError = require('../utils/customError');
 
 const errorHandler = (err, req, res, next) => {
+    console.log(err);
     // // Mongoose ValidationError
     if (err.name === 'ValidationError') {
         const msg = Object.values(err.errors).map(val => val.message);
@@ -20,9 +21,9 @@ const errorHandler = (err, req, res, next) => {
     }
 
     // Send the response after handling the error
-    res.status(err.statusCode).json({
+    res.status(err.statusCode || 500).json({
         success: false,
-        error: err.message
+        error: err.message || 'INTERNAL SERVER ERROR'
     });
 }
 
