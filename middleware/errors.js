@@ -16,8 +16,13 @@ const errorHandler = (err, req, res, next) => {
 
     // Mongoose bad _id format
     if (err.name === 'CastError') {
-        const model = err.message.split('model ')[1];
-        err = new CustomError(`Not found any ${model.toUpperCase()} with ID: ${err.value}`, 404);
+        // Mongoose asertion error > cast to Number failed
+        if (err.kind === 'Number') {
+            err = new CustomError(`Wrong format of Number params`, 400);
+        } else {
+            const model = err.message.split('model ')[1];
+            err = new CustomError(`Not found any ${model.toUpperCase()} with ID: ${err.value}`, 404);
+        }
     }
 
     // Send the response after handling the error
