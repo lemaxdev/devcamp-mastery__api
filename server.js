@@ -25,7 +25,7 @@ App.use(errorHandler);
 const Server = App.listen(ENV.PORT, async () => {
     await ConnectDB(); // Try to connect to the database
     // Launch the server
-    console.log(`API Server is up and running!`.green);
+    console.log(`API Server is up and running!`.cyan.inverse);
     console.log(`MODE: ${ENV.NODE_ENV} | PORT: ${ENV.PORT}\n====================`.green);
 });
 
