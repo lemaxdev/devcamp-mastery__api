@@ -6,13 +6,15 @@ const geocoder = require('../utils/geocoder');
 
 const bootcamps = {
     // Retrieve all the bootcamps | GET /api/v1/bootcamps | Public
-    getAll: handleAsync(async (req, res, next) => {
-        const bootcampList = await Bootcamp.find();
+    getAll: handleAsync(async (req, res) => {
+        let query = JSON.stringify(req.query)
+        query = JSON.parse(query.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`));
 
+        const bootcamps = await Bootcamp.find();
         res.status(200).json({
             success: true,
             count: bootcampList.length,
-            bootcamps: bootcampList
+            bootcamps
         })
     }),
 
@@ -50,7 +52,7 @@ const bootcamps = {
                 }
             }
         })
-        
+
         res.status(200).json({
             success: true,
             count: bootcamps.length,
