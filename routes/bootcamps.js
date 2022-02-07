@@ -1,18 +1,20 @@
 const Express = require('express');
 const Router = Express.Router();
 
-const Bootcamps = require('../controllers/bootcamps.controller');
+const filterResults = require('../middleware/filter');
+const Bootcamp = require('../models/Bootcamp');
+const bootcamps = require('../controllers/bootcamps.controller');
 
 Router.route('/radius/:zipcode/:distance')
-    .get(Bootcamps.getByDistance);
+    .get(bootcamps.getByDistance);
 
 Router.route('/')
-    .get(Bootcamps.getAll)
-    .post(Bootcamps.create);
+    .get(filterResults(Bootcamp), bootcamps.getAll)
+    .post(bootcamps.create);
 
 Router.route('/:id')
-    .get(Bootcamps.getById)
-    .put(Bootcamps.update)
-    .delete(Bootcamps.delete);
+    .get(bootcamps.getById)
+    .put(bootcamps.update)
+    .delete(bootcamps.delete);
 
 module.exports = Router

@@ -7,15 +7,7 @@ const geocoder = require('../utils/geocoder');
 const bootcamps = {
     // Retrieve all the bootcamps | GET /api/v1/bootcamps | Public
     getAll: handleAsync(async (req, res) => {
-        let query = JSON.stringify(req.query)
-        query = JSON.parse(query.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`));
-
-        const bootcamps = await Bootcamp.find();
-        res.status(200).json({
-            success: true,
-            count: bootcampList.length,
-            bootcamps
-        })
+        res.status(200).json(res.filterResults);
     }),
 
     // Retrieve a bootcamp by ID | GET /api/v1/bootcamps/:id | Public
@@ -46,11 +38,7 @@ const bootcamps = {
 
         //Fetch bootcamps within radius calculated above
         const bootcamps = await Bootcamp.find({
-            location: {
-                $geoWithin: {
-                    $centerSphere: [[longitude, latitude], radius]
-                }
-            }
+            location: { $geoWithin: { $centerSphere: [[longitude, latitude], radius] } }
         })
 
         res.status(200).json({
