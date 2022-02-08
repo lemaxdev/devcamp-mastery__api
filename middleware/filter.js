@@ -15,8 +15,8 @@ const filterResults = (Model, populate) => async (req, res, next) => {
         const sortQuery = req.query.sort.split(',').join(' ');
         query = query.sort(sortQuery);
     } else {
-        // If a 'sort' filter is not provided, sort default by name, ascending
-        query = query.sort('name');
+        // If 'sort' filter is not provided, sort default by the newest
+        query = query.sort('-createdAt');
     }
 
     // PAGINATION SYSTEM, using 'page' and 'limit' passed in query
