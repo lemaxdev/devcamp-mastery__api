@@ -1,20 +1,19 @@
 const express = require("express");
 const colors = require("colors");
+const morgan = require("morgan");
 
 const ENV = require("./config/env.config");
 const ConnectDB = require("./config/db.config");
-const Logger = require("morgan");
-
+const CustomError = require('./utils/customError');
 const errorHandler = require('./middleware/errors');
 
 const bootcampsRouter = require("./routes/bootcamps");
 const coursesRouter = require('./routes/courses');
 
 const api = express();
-
 // Middleware for logging on requests, only for DEV
 if (ENV.NODE_ENV === "development") {
-    api.use(Logger("dev"));
+    api.use(morgan("dev"));
 }
 
 // Built-in middleware for body parsing JSON Content-Type
@@ -25,25 +24,23 @@ api.use("/api/v1/bootcamps", bootcampsRouter);
 api.use('/api/v1/courses', coursesRouter);
 
 // Handle unmatched / invalid routes
-api.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        error: `Invalid request ${req.method} on route ${req.originalUrl}`
-    })
+api.use((req, res, next) => {
+    next(new CustomError(`Invalid request <${req.method}> on route ${req.originalUrl}`, 404));
 })
 
 // Middleware for handling errors
 api.use(errorHandler);
 
+// Create server object to handle rejections
 const server = api.listen(ENV.PORT, async () => {
     await ConnectDB(); // Try to connect to the database
-    // Launch the server
-    console.log(`API Server is up and running!`.cyan.inverse);
-    console.log(`MODE: ${ENV.NODE_ENV} | PORT: ${ENV.PORT}\n====================`.green);
+    // Notify the server is running
+    console.log(`API Server is up and running!`.green.inverse.bold);
+    console.log(`MODE: ${ENV.NODE_ENV} | PORT: ${ENV.PORT}\n====================`.yellow);
 });
 
 // Handle promise rejections
-process.on("unhandledRejection", (err, promise) => {
-    console.log(`Can't launch the server due to unexpected ERROR:`.magenta + `\n ${err}`.white);
+process.on("unhandledRejection", (err) => {
+    console.log(`Can't launch the server due to unexpected ERROR:`.magenta.inverse + `\n ${err}`.white);
     server.close(() => process.exit(1));
 });
