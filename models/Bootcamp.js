@@ -118,16 +118,26 @@ const BootcampSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+// Create virtuals for populate the bootcamp with related courses
+BootcampSchema.virtual('courses', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp',
+    justOne: false
 });
 
 // Mongoose middleware for creating the slug from the name
-BootcampSchema.pre('save', function(next) {
+BootcampSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
 
 // Create location field & geocoder
-BootcampSchema.pre('save', async function(next) {
+BootcampSchema.pre('save', async function (next) {
     const loc = await geocoder.geocode(this.address);
     this.location = {
         type: 'Point',
