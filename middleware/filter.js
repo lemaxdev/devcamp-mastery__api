@@ -28,6 +28,11 @@ const filterResults = (Model, populate) => async (req, res, next) => {
 
     // Apply pagination to the query and execute the query
     query = query.skip(startIndex).limit(limit);
+
+    // Check if we have 'populate' passed as argument and perform a populate on model
+    if (populate) {
+        query = query.populate(populate);
+    }
     const results = await query;
 
     // Format pagination object to send it in response
