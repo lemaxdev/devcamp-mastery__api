@@ -122,6 +122,7 @@ const BootcampSchema = new mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
+
 // Create virtuals for populate the bootcamp with related courses
 BootcampSchema.virtual('courses', {
     ref: 'Course',
@@ -130,7 +131,7 @@ BootcampSchema.virtual('courses', {
     justOne: false
 });
 
-// Mongoose middleware for creating the slug from the name
+// Create 'slug' field
 BootcampSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
@@ -151,6 +152,12 @@ BootcampSchema.pre('save', async function (next) {
     }
     this.address = undefined; // not save the address
 
+    next();
+});
+
+// Cascade delete > when a bootcamp is deleted, also delete related courses
+BootcampSchema.pre('remove', async function (next) {
+    await this.model('Course').deleteMany({ bootcamp: this._id });
     next();
 });
 

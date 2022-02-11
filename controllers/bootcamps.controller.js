@@ -76,10 +76,11 @@ const bootcamps = {
 
     // Delete a bootcamp by ID | DELETE /api/v1/bootcamps/:id | Privat
     delete: handleAsync(async (req, res, next) => {
-        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+        const bootcamp = await Bootcamp.findById(req.params.id);
         if (!bootcamp) {
             return next(new CustomError('BOOTCAMP not found', 404));
         }
+        bootcamp.remove();
 
         res.status(200).json({
             success: true,
