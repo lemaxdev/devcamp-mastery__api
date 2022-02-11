@@ -9,7 +9,10 @@ Router.route('/radius/:zipcode/:distance')
     .get(bootcamps.getByDistance);
 
 Router.route('/')
-    .get(filterResults(Bootcamp), bootcamps.getAll)
+    .get(filterResults(Bootcamp, {
+        path: 'courses',
+        select: 'title description -bootcamp'
+    }), bootcamps.getAll)
     .post(bootcamps.create);
 
 Router.route('/:id')
