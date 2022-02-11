@@ -12,7 +12,10 @@ const bootcamps = {
 
     // Retrieve a bootcamp by ID | GET /api/v1/bootcamps/:id | Public
     getById: handleAsync(async (req, res, next) => {
-        const bootcamp = await Bootcamp.findById(req.params.id);
+        const bootcamp = await Bootcamp.findById(req.params.id).populate({
+            path: 'courses',
+            select: 'title description -bootcamp'
+        });
         if (!bootcamp) {
             return next(new CustomError('BOOTCAMP not found', 404));
         }

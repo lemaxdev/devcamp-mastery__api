@@ -22,20 +22,6 @@ const courses = {
         });
     }),
 
-    // Get courses for a bootcamp | GET /api/v1/courses/bootcamp/:bootcampId | Public
-    getByBootcampId: handleAsync(async (req, res, next) => {
-        const courses = await Course.find({ bootcamp: req.params.bootcampId });
-        if (courses.length == 0) {
-            return next(new CustomError('COURSE not found', 404));
-        }
-
-        res.status(200).json({
-            success: true,
-            count: courses.length,
-            body: courses
-        });
-    }),
-
     // Add a new course | POST  /api/v1/courses | Privat
     create: handleAsync(async (req, res) => {
         const course = await Course.create(req.body);

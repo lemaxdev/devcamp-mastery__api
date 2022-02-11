@@ -13,8 +13,6 @@ router.route('/')
     }), courses.getAll)
     .post(courses.create);
 
-router.route('/bootcamp/:bootcampId').get(courses.getByBootcampId);
-
 router.route('/:id')
     .get(courses.getById)
     .put(courses.update)
