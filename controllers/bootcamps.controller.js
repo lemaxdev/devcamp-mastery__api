@@ -13,26 +13,23 @@ const bootcamps = {
     // Retrieve a bootcamp by ID | GET /api/v1/bootcamps/:id | Public
     getById: handleAsync(async (req, res, next) => {
         const bootcamp = await Bootcamp.findById(req.params.id);
-
         if (!bootcamp) {
-            return next(new CustomError(`BOOTCAMP not found with ID: ${req.params.id}`, 404));
+            return next(new CustomError('BOOTCAMP not found', 404));
         }
 
         res.status(200).json({
             success: true,
-            bootcamp: bootcamp
+            body: bootcamp
         })
     }),
 
     // Get bootcamps within a radius | GET /api/v1/bootcamps/radius/:zipcode/:distance | Privat
     getByDistance: handleAsync(async (req, res, next) => {
         const { zipcode, distance } = req.params;
-
         // Get the longitude and latitude
         const loc = await geocoder.geocode(zipcode);
         const longitude = loc[0].longitude;
         const latitude = loc[0].latitude;
-
         // Calculate the radius > divide distance by radius of Earth | 3963 miles / 6378 km
         const radius = distance / 6378 // for km in metric system
 
@@ -44,7 +41,7 @@ const bootcamps = {
         res.status(200).json({
             success: true,
             count: bootcamps.length,
-            bootcamps: bootcamps
+            body: bootcamps
         })
     }),
 
@@ -54,9 +51,8 @@ const bootcamps = {
 
         res.status(201).json({
             success: true,
-            new_added_bootcamp: bootcamp
+            body: bootcamp
         });
-        console.log(bootcamp);
     }),
 
     // Update a bootcamp by ID | PUT /api/v1/bootcamps/:id | Privat
@@ -65,28 +61,26 @@ const bootcamps = {
             new: true,
             runValidators: true
         });
-
         if (!bootcamp) {
-            return next(new CustomError(`BOOTCAMP not found with ID: ${req.params.id}`, 404));
+            return next(new CustomError('BOOTCAMP not found', 404));
         }
 
         res.status(200).json({
             success: true,
-            bootcamp_updated: bootcamp
+            body: bootcamp
         });
     }),
 
     // Delete a bootcamp by ID | DELETE /api/v1/bootcamps/:id | Privat
     delete: handleAsync(async (req, res, next) => {
         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
-
         if (!bootcamp) {
-            return next(new CustomError(`BOOTCAMP not found with ID: ${req.params.id}`, 404));
+            return next(new CustomError('BOOTCAMP not found', 404));
         }
 
         res.status(200).json({
             success: true,
-            bootcamp_deleted: bootcamp
+            body: bootcamp
         })
     })
 };

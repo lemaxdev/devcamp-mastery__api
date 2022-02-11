@@ -14,25 +14,21 @@ const filterResults = (Model, populate) => async (req, res, next) => {
     if (req.query.sort) {
         const sortQuery = req.query.sort.split(',').join(' ');
         query = query.sort(sortQuery);
-    } else {
-        // If 'sort' filter is not provided, sort default by the newest
+    } else { // If 'sort' filter is not provided, sort default by the newest
         query = query.sort('-createdAt');
     }
 
     // PAGINATION SYSTEM, using 'page' and 'limit' passed in query
     // By DEFAULT, start always from 'page' 1 with a 'limit' of 25 items per page
-    // Init pagination constants
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page - 1) * limit;
-
-    // Apply pagination to the query and execute the query
+    // Apply pagination and populate(if is required) to the query
     query = query.skip(startIndex).limit(limit);
-
-    // Check if we have 'populate' passed as argument and perform a populate on model
     if (populate) {
         query = query.populate(populate);
     }
+    // Execute the query
     const results = await query;
 
     // Format pagination object to send it in response
@@ -46,7 +42,6 @@ const filterResults = (Model, populate) => async (req, res, next) => {
         total_pages: pages,
         limit,
     };
-
     // Check if exist a next page or a previous page and add to the pagination result
     if (endIndex < totalItems) {
         pagination.next_page = page + 1;
@@ -62,7 +57,6 @@ const filterResults = (Model, populate) => async (req, res, next) => {
         count: results.length,
         body: results
     }
-
     next();
 }
 

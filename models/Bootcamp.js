@@ -79,13 +79,13 @@ const BootcampSchema = new mongoose.Schema({
         ]
     },
 
-    average_rating: {
+    averageRating: {
         type: Number,
         min: [1, 'Rating must be at least 1'],
         max: [10, 'Rating must be at most 10'],
     },
 
-    average_cost: {
+    averageCost: {
         type: Number
     },
 
@@ -99,17 +99,17 @@ const BootcampSchema = new mongoose.Schema({
         default: false
     },
 
-    job_assistance: {
+    jobAssistance: {
         type: Boolean,
         default: false
     },
 
-    job_guarantee: {
+    jobGuarantee: {
         type: Boolean,
         default: false
     },
 
-    accept_gi: {
+    acceptGi: {
         type: Boolean,
         default: false
     },

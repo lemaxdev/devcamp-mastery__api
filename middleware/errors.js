@@ -15,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
 
     // Mongoose CastErrors for bad type format of values
     if (err.name === 'CastError') {
-        err = new CustomError(`Wrong type for value ${err.stringValue}(type ${err.valueType}), require type <${err.kind}>`, 400);
+        err = new CustomError('Wrong type params', 400);
     }
 
     // Send the response after handling the error
