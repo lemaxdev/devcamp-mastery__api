@@ -1,6 +1,8 @@
 const express = require('express');
 const colors = require('colors');
 const morgan = require('morgan');
+const fileupload = require('express-fileupload');
+const path = require('path');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -11,18 +13,23 @@ const bootcampsRouter = require('./routes/bootcamps');
 const coursesRouter = require('./routes/courses');
 
 const api = express();
+// Built-in middleware for body parsing JSON Content-Type
+api.use(express.json());
+
+// FileUpload middleware
+api.use(fileupload());
+
+// Set static folder
+api.use(express.static(path.join(__dirname, 'public')));
+
 // Middleware for logging on requests, only for DEV
 if (ENV.NODE_ENV === "development") {
     api.use(morgan('dev'));
 }
 
-// Built-in middleware for body parsing JSON Content-Type
-api.use(express.json());
-
 // Mount routers
 api.use('/api/v1/bootcamps', bootcampsRouter);
 api.use('/api/v1/courses', coursesRouter);
-
 // Handle unmatched / invalid routes
 api.use((req, res, next) => {
     next(new CustomError(`Invalid request <${req.method}> on route ${req.originalUrl}`, 404));

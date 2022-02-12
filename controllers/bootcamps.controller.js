@@ -1,8 +1,11 @@
 // @desc    Controllers for CRUD operations on bootcamps
+const path = require('path');
+
 const Bootcamp = require("../models/Bootcamp");
 const handleAsync = require('../middleware/async');
 const CustomError = require('../utils/customError');
 const geocoder = require('../utils/geocoder');
+const ENV = require('../config/env.config');
 
 const bootcamps = {
     // Retrieve all the bootcamps | GET /api/v1/bootcamps | Public
@@ -55,6 +58,45 @@ const bootcamps = {
         res.status(201).json({
             success: true,
             body: bootcamp
+        });
+    }),
+
+    // Upload photo for bootcamp profile | PUT /api/v1/bootcamps/:id/photo | Privat
+    uploadPhoto: handleAsync(async (req, res, next) => {
+        const bootcamp = await Bootcamp.findById(req.params.id);
+        if (!bootcamp) {
+            return next(new CustomError('BOOTCAMP not found', 404));
+        }
+
+        // Check if any file is selected for upload
+        if (!req.files) {
+            return next(new CustomError('Select a file for upload', 400));
+        }
+        // Check if file selected is an `image/photo`
+        const photo = req.files.photo;
+        if (!photo.mimetype.startsWith('image')) {
+            return next(new CustomError('Only image file are allowed to be uploaded'));
+        }
+        // Check size of image to be less than maximum allowed
+        if (photo.size > ENV.MAX_FILE_SIZE) {
+            return next(new CustomError(`Only images less than ${ENV.MAX_FILE_SIZE_MB} MB are allowed`, 400));
+        }
+        // Rename the image file to avoid overwriting
+        photo.name = `photo_${bootcamp.slug}${path.parse(photo.name).ext}`;
+        // Save image file to the server
+        photo.mv(`${ENV.FILE_UPLOAD_PATH}/${photo.name}`, async err => {
+            if (err) {
+                console.error(err);
+                return next(new CustomError('Failed upload the image file', 500));
+            }
+
+            await Bootcamp.findByIdAndUpdate(req.params.id, { photo: photo.name });
+        });
+
+
+        res.status(200).json({
+            success: true,
+            body: photo.name
         });
     }),
 

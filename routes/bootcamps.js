@@ -16,6 +16,8 @@ router.route('/')
     }), bootcamps.getAll)
     .post(bootcamps.create);
 
+router.route('/:id/photo').put(bootcamps.uploadPhoto);
+
 router.route('/:id')
     .get(bootcamps.getById)
     .put(bootcamps.update)
