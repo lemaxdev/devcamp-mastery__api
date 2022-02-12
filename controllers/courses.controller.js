@@ -50,10 +50,11 @@ const courses = {
 
     // Delete a course | DELETE  /api/v1/courses/:id | Privat
     delete: handleAsync(async (req, res, next) => {
-        const course = await Course.findByIdAndDelete(req.params.id);
+        const course = await Course.findById(req.params.id);
         if (!course) {
             return next(new CustomError('COURSE not found', 404));
         }
+        course.remove();
 
         res.status(200).json({
             success: true,
