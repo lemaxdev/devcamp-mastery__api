@@ -3,6 +3,7 @@ const colors = require('colors');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -16,6 +17,8 @@ const authRouter = require('./routes/auth');
 const api = express();
 // Built-in middleware for body parsing JSON Content-Type
 api.use(express.json());
+// Cookie parser
+api.use(cookieParser());
 
 // FileUpload middleware
 api.use(fileupload());
