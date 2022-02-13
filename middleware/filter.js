@@ -53,7 +53,7 @@ const filterResults = (Model, populate) => async (req, res, next) => {
     // Create an object on res object that we can use within any routes that use this middleware
     res.filterResults = {
         success: true,
-        pagination,
+        pagination: totalItems >= limit ? pagination : false,
         count: results.length,
         body: results
     }
