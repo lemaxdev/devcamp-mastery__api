@@ -11,6 +11,7 @@ const errorHandler = require('./middleware/errors');
 
 const bootcampsRouter = require('./routes/bootcamps');
 const coursesRouter = require('./routes/courses');
+const authRouter = require('./routes/auth');
 
 const api = express();
 // Built-in middleware for body parsing JSON Content-Type
@@ -30,6 +31,8 @@ if (ENV.NODE_ENV === "development") {
 // Mount routers
 api.use('/api/v1/bootcamps', bootcampsRouter);
 api.use('/api/v1/courses', coursesRouter);
+api.use('/api/v1/auth', authRouter);
+
 // Handle unmatched / invalid routes
 api.use((req, res, next) => {
     next(new CustomError(`Invalid request <${req.method}> on route ${req.originalUrl}`, 404));
