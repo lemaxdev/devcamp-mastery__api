@@ -14,7 +14,8 @@ const ENV = {
     MAX_FILE_SIZE_MB: process.env.MAX_FILE_SIZE_MB,
 
     JWT_SECRET: process.env.JWT_SECRET,
-    JWT_EXPIRE: process.env.JWT_EXPIRE
-}
+    JWT_EXPIRE: process.env.JWT_EXPIRE,
+    COOKIE_EXPIRE: process.env.COOKIE_EXPIRE
+};
 
 module.exports = ENV
