@@ -11,7 +11,10 @@ const ENV = {
 
     FILE_UPLOAD_PATH: process.env.FILE_UPLOAD_PATH,
     MAX_FILE_SIZE: process.env.MAX_FILE_SIZE,
-    MAX_FILE_SIZE_MB: process.env.MAX_FILE_SIZE_MB
+    MAX_FILE_SIZE_MB: process.env.MAX_FILE_SIZE_MB,
+
+    JWT_SECRET: process.env.JWT_SECRET,
+    JWT_EXPIRE: process.env.JWT_EXPIRE
 }
 
 module.exports = ENV
