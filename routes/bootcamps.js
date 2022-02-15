@@ -1,6 +1,7 @@
 const express = require('express');
 
 const filterResults = require('../middleware/filter');
+const authGuard = require('../middleware/auth-guard');
 const bootcamps = require('../controllers/bootcamps.controller');
 const Bootcamp = require('../models/Bootcamp');
 
@@ -14,13 +15,14 @@ router.route('/')
         path: 'courses',
         select: 'title description -bootcamp'
     }), bootcamps.getAll)
-    .post(bootcamps.create);
+    .post(authGuard.ensureAuthenticated, authGuard.authorize('publisher'), bootcamps.create);
 
-router.route('/:id/photo').put(bootcamps.uploadPhoto);
+router.route('/:id/photo')
+    .put(authGuard.ensureAuthenticated, authGuard.authorize('publisher'), bootcamps.uploadPhoto);
 
 router.route('/:id')
     .get(bootcamps.getById)
-    .put(bootcamps.update)
-    .delete(bootcamps.delete);
+    .put(authGuard.ensureAuthenticated, authGuard.authorize('publisher'), bootcamps.update)
+    .delete(authGuard.ensureAuthenticated, authGuard.authorize('publisher'), bootcamps.delete);
 
 module.exports = router;
