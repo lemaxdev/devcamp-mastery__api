@@ -39,7 +39,17 @@ const auth = {
         }
 
         tokenResponse(user, 200, res);
-    })
+    }),
+
+    // Get the current logged in user | GET /api/v1/auth/me Private
+    getMe: handleAsync(async (req, res) => {
+        const user = await User.findById(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            body: user
+        });
+    }),
 };
 
 // Sign(create) and get new token, create cookie and send response
