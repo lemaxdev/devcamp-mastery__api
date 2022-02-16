@@ -53,12 +53,17 @@ const bootcamps = {
 
     // Add a new bootcamp | POST /api/v1/bootcamps | Privat
     create: handleAsync(async (req, res, next) => {
+        // Check if user do not reached the limit of one bootcamp per user
+        const isLimitReached = await Bootcamp.findOne({ user: req.user.id });
+        if (isLimitReached && req.user.role !== 'admin') {
+            return next(new CustomError('This user has already published a bootcamp', 403));
+        }
+
+        // Add current user as owner of the bootcamp and create the new bootcamp
+        req.body.user = req.user.id;
         const bootcamp = await Bootcamp.create(req.body);
 
-        res.status(201).json({
-            success: true,
-            body: bootcamp
-        });
+        res.status(201).json({ success: true, body: bootcamp });
     }),
 
     // Upload photo for bootcamp profile | PUT /api/v1/bootcamps/:id/photo | Privat
@@ -66,6 +71,10 @@ const bootcamps = {
         const bootcamp = await Bootcamp.findById(req.params.id);
         if (!bootcamp) {
             return next(new CustomError('BOOTCAMP not found', 404));
+        }
+        // Check user ownership of the requested bootcamp
+        if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return next(new CustomError('The user is not authorized to upload a photo for this bootcamp', 403));
         }
 
         // Check if any file is selected for upload
@@ -102,18 +111,22 @@ const bootcamps = {
 
     // Update a bootcamp by ID | PUT /api/v1/bootcamps/:id | Privat
     update: handleAsync(async (req, res, next) => {
-        const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
+        let bootcamp = await Bootcamp.findById(req.params.id);
         if (!bootcamp) {
             return next(new CustomError('BOOTCAMP not found', 404));
         }
 
-        res.status(200).json({
-            success: true,
-            body: bootcamp
+        // Check user ownership of the requested bootcamp
+        if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return next(new CustomError('The user is not authorized to update this bootcamp', 403));
+        }
+
+        bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+            runValidators: true,
+            new: true,
         });
+
+        res.status(200).json({ success: true, body: bootcamp });
     }),
 
     // Delete a bootcamp by ID | DELETE /api/v1/bootcamps/:id | Privat
@@ -122,12 +135,14 @@ const bootcamps = {
         if (!bootcamp) {
             return next(new CustomError('BOOTCAMP not found', 404));
         }
-        bootcamp.remove();
 
-        res.status(200).json({
-            success: true,
-            body: bootcamp
-        })
+        // Check user ownership of the requested boocamp
+        if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return next(new CustomError('The user is not authorized to delete this bootcamp', 403));
+        }
+
+        bootcamp.remove();
+        res.status(200).json({ success: true, body: bootcamp })
     })
 };
 
