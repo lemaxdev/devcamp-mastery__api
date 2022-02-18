@@ -15,7 +15,14 @@ const ENV = {
 
     JWT_SECRET: process.env.JWT_SECRET,
     JWT_EXPIRE: process.env.JWT_EXPIRE,
-    COOKIE_EXPIRE: process.env.COOKIE_EXPIRE
+    COOKIE_EXPIRE: process.env.COOKIE_EXPIRE,
+
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USERNAME: process.env.SMTP_USERNAME,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    FROM_EMAIL: process.env.FROM_EMAIL,
+    FROM_NAME: process.env.FROM_NAME
 };
 
 module.exports = ENV
