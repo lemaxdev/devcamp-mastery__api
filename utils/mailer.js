@@ -19,7 +19,6 @@ const sendEmail = async (messageConfig) => {
     };
 
     const email = await transporter.sendMail(message);
-    console.log(email);
 }
 
 module.exports = sendEmail;
