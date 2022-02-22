@@ -123,6 +123,40 @@ const auth = {
         } catch (err) {
             return next(new CustomError(`Email can not be sent. ERROR: ${err}`, 500));
         }
+    }),
+
+    // Update user details (name, email) | PUT /api/v1/auth/update-info Privat
+    updateInfo: handleAsync(async (req, res, next) => {
+        const dataToUpdate = {
+            name: req.body.newName,
+            email: req.body.newEmail
+        }
+        const user = await User.findByIdAndUpdate(req.user.id, dataToUpdate, {
+            runValidators: true,
+            new: true
+        });
+
+        res.status(200).json({
+            success: true,
+            body: user
+        });
+    }),
+
+    // Update user password | PUT /api/v1/auth/update-password Privat
+    updatePass: handleAsync(async (req, res, next) => {
+        const user = await User.findById(req.user.id).select('+password');
+
+        if (!req.body.currentPassword) {
+            return next(new CustomError('Current password is required in order to change password', 401));
+        }
+        if (!(await user.checkPassword(req.body.currentPassword))) {
+            return next(new CustomError('Password is incorrect', 401));
+        }
+
+        user.password = req.body.newPassword;
+        await user.save();
+
+        tokenResponse(user, 200, res);
     })
 };
 
