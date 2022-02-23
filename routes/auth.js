@@ -6,6 +6,7 @@ const authGuard = require('../middleware/auth-guard');
 const router = express.Router();
 
 router.get('/me', authGuard.ensureAuthenticated, auth.getMe);
+router.get('/logout', authGuard.ensureAuthenticated, auth.logout);
 
 router.post('/register', auth.register);
 router.post('/login', auth.login);
