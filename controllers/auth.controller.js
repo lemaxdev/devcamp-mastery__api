@@ -44,6 +44,20 @@ const auth = {
         tokenResponse(user, 200, res);
     }),
 
+    // Log out user and clear cookie | GET /api/v1/auth/logout Private
+    logout: handleAsync(async (req, res, next) => {
+        // Cookie options
+        const options = {
+            expires: new Date(Date.now()),
+            httpOnly: true
+        };
+        // Set cookie
+        res.status(200).cookie('token', 'none', options).json({
+            success: true,
+            body: 'User logged out'
+        });
+    }),
+
     // Get the current logged in user | GET /api/v1/auth/me Private
     getMe: handleAsync(async (req, res) => {
         const user = await User.findById(req.user.id);
