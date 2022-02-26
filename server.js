@@ -13,6 +13,7 @@ const errorHandler = require('./middleware/errors');
 const bootcampsRouter = require('./routes/bootcamps');
 const coursesRouter = require('./routes/courses');
 const authRouter = require('./routes/auth');
+const adminRouter = require('./routes/admin');
 
 const api = express();
 // Built-in middleware for body parsing JSON Content-Type
@@ -35,6 +36,7 @@ if (ENV.NODE_ENV === "development") {
 api.use('/api/v1/bootcamps', bootcampsRouter);
 api.use('/api/v1/courses', coursesRouter);
 api.use('/api/v1/auth', authRouter);
+api.use('/api/v1/admin', adminRouter);
 
 // Handle unmatched / invalid routes
 api.use((req, res, next) => {
