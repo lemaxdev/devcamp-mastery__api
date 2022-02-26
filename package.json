@@ -1,13 +1,13 @@
 {
-  "name": "bootcamp-directory_api",
+  "name": "devcamp-mastery__api",
   "version": "1.0.0",
-  "description": "backend API for a bootcamp website/app",
+  "description": "Devcamp Mastery backend server API",
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server.js",
     "dev": "nodemon server.js"
   },
-  "author": "LEMAX DEV",
+  "author": "lemaxdev",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
