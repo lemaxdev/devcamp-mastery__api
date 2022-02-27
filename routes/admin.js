@@ -7,13 +7,16 @@ const ensureAuth = require('../middleware/auth-guard');
 
 const router = express.Router();
 
+// Ensure user is authenticated and authorized as 'admin' for all routes
+router.use(ensureAuth('admin'));
+
 router.route('/users')
-    .get(ensureAuth('admin'), filterResults(User), admin.getAllUsers)
-    .post(ensureAuth('admin'), admin.createUser);
+    .get(filterResults(User), admin.getAllUsers)
+    .post(admin.createUser);
 
 router.route('/users/:userId')
-    .get(ensureAuth('admin'), admin.getUserById)
-    .put(ensureAuth('admin'), admin.updateUserData)
-    .delete(ensureAuth('admin'), admin.deleteUser);
+    .get(admin.getUserById)
+    .put(admin.updateUserData)
+    .delete(admin.deleteUser);
 
 module.exports = router;
