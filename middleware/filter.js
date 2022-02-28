@@ -1,4 +1,6 @@
-const filterResults = (Model, populate) => async (req, res, next) => {
+const handleAsync = require('./async');
+
+const filterResults = (Model, populate) => handleAsync(async (req, res, next) => {
     // Format query with mongoose operators <$gt, $lt, etc>
     let filtering = JSON.stringify(req.query);
     filtering = filtering.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
@@ -14,7 +16,8 @@ const filterResults = (Model, populate) => async (req, res, next) => {
     if (req.query.sort) {
         const sortQuery = req.query.sort.split(',').join(' ');
         query = query.sort(sortQuery);
-    } else { // If 'sort' filter is not provided, sort default by the newest
+    } else {
+        // If 'sort' filter is not provided, sort default by the newest
         query = query.sort('-createdAt');
     }
 
@@ -58,6 +61,6 @@ const filterResults = (Model, populate) => async (req, res, next) => {
         body: results
     }
     next();
-}
+});
 
 module.exports = filterResults;
