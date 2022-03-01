@@ -27,7 +27,7 @@ const ensureAuth = (...roles) => handleAsync(async (req, res, next) => {
     // Check if we have roles authorization and the user is NOT an admin
     if (roles.length > 0 && req.user.role !== 'admin') {
         if (!roles.includes(req.user.role)) {
-            return next(new CustomError('Not authorize with current role', 403));
+            return next(new CustomError(`The role '${req.user.role}' doesn't have access to this route`, 403));
         }
     }
 

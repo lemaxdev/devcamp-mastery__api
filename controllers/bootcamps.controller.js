@@ -84,7 +84,7 @@ const bootcamps = {
         // Check if file selected is an `image/photo`
         const photo = req.files.photo;
         if (!photo.mimetype.startsWith('image')) {
-            return next(new CustomError('Only image file are allowed to be uploaded'));
+            return next(new CustomError('Only image file are allowed to be uploaded'), 400);
         }
         // Check size of image to be less than maximum allowed
         if (photo.size > ENV.MAX_FILE_SIZE) {
@@ -118,7 +118,7 @@ const bootcamps = {
 
         // Check user ownership of the requested bootcamp
         if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new CustomError('The user is not authorized to update this bootcamp', 403));
+            return next(new CustomError(`The user doesn't have access to update this bootcamp`, 403));
         }
 
         bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
@@ -138,7 +138,7 @@ const bootcamps = {
 
         // Check user ownership of the requested boocamp
         if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new CustomError('The user is not authorized to delete this bootcamp', 403));
+            return next(new CustomError(`The user doesn't have access to delete this bootcamp`, 403));
         }
 
         bootcamp.remove();

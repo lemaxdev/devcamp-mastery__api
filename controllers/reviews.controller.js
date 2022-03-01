@@ -30,7 +30,7 @@ const reviews = {
         // Check if the bootcamp for which the review is being added exist
         const bootcamp = await Bootcamp.findById(req.body.bootcamp);
         if (!bootcamp) {
-            return next(new CustomError(`BOOTCAMP not found, cannot create a review for a Bootcamp does not exist`, 404));
+            return next(new CustomError(`BOOTCAMP not found, cannot add a review for a Bootcamp does not exist`, 404));
         }
 
         // Verify the limit of one review per bootcamp

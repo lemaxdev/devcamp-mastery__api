@@ -1,6 +1,7 @@
 const CustomError = require('../utils/customError');
 
 const errorHandler = (err, req, res, next) => {
+    console.log(err);
     // Mongoose ValidationError
     if (err.name === 'ValidationError') {
         const msg = Object.values(err.errors).map(val => val.message);
@@ -10,12 +11,12 @@ const errorHandler = (err, req, res, next) => {
     // Mongoose Duplicate key error
     if (err.code == 11000) {
         const field = Object.keys(err.keyValue);
-        err = new CustomError(`Duplicate field value for <${field}>`, 400);
+        err = new CustomError(`Duplicate field value for '${field}'`, 400);
     }
 
     // Mongoose CastErrors for bad type format of values
     if (err.name === 'CastError') {
-        err = new CustomError('Wrong type params', 400);
+        err = new CustomError(`The format of the "${err.path}" field is invalid`, 400);
     }
 
     // Send the response after handling the error

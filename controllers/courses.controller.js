@@ -27,12 +27,12 @@ const courses = {
     create: handleAsync(async (req, res, next) => {
         const bootcamp = await Bootcamp.findById(req.body.bootcamp);
         if (!bootcamp) {
-            return next(new CustomError('BOOTCAMP not found, cannot create a course to a Bootcamp does not exist', 404));
+            return next(new CustomError('BOOTCAMP not found, cannot add a course to a Bootcamp does not exist', 404));
         }
 
         // Check user ownership of the bootcamp
         if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new CustomError('The user is not authorized to create a course for this bootcamp', 403));
+            return next(new CustomError(`The user doesn't have access to add a course for this bootcamp`, 403));
         }
 
         req.body.user = req.user.id;
@@ -53,7 +53,7 @@ const courses = {
 
         // Check user ownership of the course
         if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new CustomError('The user is not authorized to update this course', 403));
+            return next(new CustomError(`The user doesn't have access to update this course`, 403));
         }
 
         course = await Course.findByIdAndUpdate(req.params.id, req.body, {
@@ -75,7 +75,7 @@ const courses = {
 
         // Check user ownership of the course
         if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new CustomError('The user is not authorized to delete this course', 403));
+            return next(new CustomError(`The user doesn't have access to delete this course`, 403));
         }
 
         course.remove();
