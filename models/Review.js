@@ -38,4 +38,37 @@ const ReviewSchema = new mongoose.Schema({
     }
 });
 
+// Calculate the average rating for a bootcamp
+ReviewSchema.statics.getAverageRating = async function (bootcampId) {
+    const average = await this.aggregate([
+        {
+            $match: { bootcamp: bootcampId }
+        },
+        {
+            $group: {
+                _id: '$bootcamp',
+                averageRating: { $avg: '$rating' }
+            }
+        }
+    ]);
+
+    // Update averageRating field on Bootcamp
+    try {
+        await this.model('Bootcamp').findByIdAndUpdate(bootcampId, {
+            averageRating: average[0].averageRating
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// Execute averageRating everytime after save a new doc and before remove one
+ReviewSchema.post('save', function () {
+    this.constructor.getAverageRating(this.bootcamp);
+});
+ReviewSchema.pre('remove', function (next) {
+    this.constructor.getAverageRating(this.bootcamp);
+    next();
+});
+
 module.exports = mongoose.model('Review', ReviewSchema);
