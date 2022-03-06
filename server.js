@@ -5,6 +5,10 @@ const fileupload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const { xss } = require('express-xss-sanitizer');
+const hpp = require('hpp');
+const cors = require('cors');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -22,8 +26,13 @@ const api = express();
 api.use(express.json());
 // Cookie parser
 api.use(cookieParser());
-// Sanitize input data from users
+
+// Security middlewares
 api.use(mongoSanitize());
+api.use(helmet());
+api.use(xss());
+api.use(hpp());
+api.use(cors());
 
 // FileUpload middleware
 api.use(fileupload());
