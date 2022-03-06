@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const { xss } = require('express-xss-sanitizer');
 const hpp = require('hpp');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -34,6 +35,12 @@ api.use(xss());
 api.use(hpp());
 api.use(cors());
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 50, // Limit each IP to 50 requests per `window` (here, per 15 minutes)
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+api.use(limiter);
 // FileUpload middleware
 api.use(fileupload());
 
