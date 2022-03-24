@@ -1,6 +1,5 @@
 const express = require('express');
 const colors = require('colors');
-const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -49,6 +48,7 @@ api.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware for logging on requests, only for DEV
 if (ENV.NODE_ENV === "development") {
+    const morgan = require('morgan');
     api.use(morgan('dev'));
 }
 
