@@ -2,3 +2,4 @@ node_modules
 config/config.env
 _data
 DEV WORK
+*.env
