@@ -10,6 +10,7 @@ const hpp = require('hpp');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const apicache = require('apicache');
+const compression = require('compression');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -24,9 +25,19 @@ const reviewsRouter = require('./routes/reviews');
 
 const api = express();
 
+// Compression middleware
+api.use(compression());
+
 // Caching middleware
-let cache = apicache.middleware
-api.use(cache('5 minutes'));
+// disable caching for POST, PUT, DELETE request method
+const checkMethod = (req, res) => req.method === 'GET';
+let cache = apicache.options({
+    statusCodes: {
+        include: [200]
+    }
+}).middleware
+
+api.use(cache('5 minutes', checkMethod));
 
 // Built-in middleware for body parsing JSON Content-Type
 api.use(express.json());
