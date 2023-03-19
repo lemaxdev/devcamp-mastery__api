@@ -43,7 +43,7 @@ const filterResults = (Model, populate) => handleAsync(async (req, res, next) =>
         next_page: null,
         prev_page: null,
         total_pages: pages,
-        limit,
+        limit_per_page: limit,
     };
     // Check if exist a next page or a previous page and add to the pagination result
     if (endIndex < totalItems) {
@@ -57,7 +57,7 @@ const filterResults = (Model, populate) => handleAsync(async (req, res, next) =>
     res.filterResults = {
         success: true,
         pagination: totalItems >= limit ? pagination : false,
-        count: results.length,
+        count: totalItems,
         body: results
     }
     next();
