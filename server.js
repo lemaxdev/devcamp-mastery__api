@@ -9,6 +9,7 @@ const { xss } = require('express-xss-sanitizer');
 const hpp = require('hpp');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const apicache = require('apicache');
 
 const ENV = require('./config/env.config');
 const connectDB = require('./config/db.config');
@@ -22,6 +23,11 @@ const adminRouter = require('./routes/admin');
 const reviewsRouter = require('./routes/reviews');
 
 const api = express();
+
+// Caching middleware
+let cache = apicache.middleware
+api.use(cache('5 minutes'));
+
 // Built-in middleware for body parsing JSON Content-Type
 api.use(express.json());
 // Cookie parser
