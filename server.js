@@ -91,7 +91,8 @@ const server = api.listen(ENV.PORT, async () => {
     await connectDB(); // Try to connect to the database
     // Notify the server is running
     console.log(`API Server is up and running!`.green.inverse.bold);
-    console.log(`MODE: ${ENV.NODE_ENV} | PORT: ${ENV.PORT}\n====================`.yellow);
+    console.log(`MODE: ${ENV.NODE_ENV} | PORT: ${ENV.PORT}`.yellow);
+    console.log(`LIVE AT: http://localhost:${ENV.PORT}\n====================`.yellow);
 });
 
 // Handle promise rejections
