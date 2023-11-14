@@ -71,6 +71,13 @@ if (ENV.NODE_ENV === "development") {
     api.use(morgan('dev'));
 }
 
+// Root(default) endpoint and health check endpoint
+api.get(/^\/(health)?$/, async (req, res) => {
+    res.status(200).json({
+        success: true,
+    });
+})
+
 // Mount routers
 api.use('/api/v1/bootcamps', bootcampsRouter);
 api.use('/api/v1/courses', coursesRouter);
