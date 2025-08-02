@@ -1,7 +1,7 @@
 {
 	"name": "devcamp-mastery__api",
 	"version": "1.0.0",
-	"description": "Devcamp Mastery backend server API",
+	"description": "Devcamp Mastery backend rest api",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
